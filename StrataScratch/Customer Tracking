@@ -1,0 +1,13 @@
+Select a1.cust_id, Sum((time_0 - time_1)*24) As duration
+from
+    (select cust_id, state, Cast(timestamp as date) As time_1, 
+        dense_rank() Over(partition by cust_id order by timestamp) As ranking_1
+     from cust_tracking
+     Where state = 1) a1
+left join 
+    ( select cust_id, state,  Cast(timestamp as date) As time_0, 
+        dense_rank() Over(partition by cust_id order by timestamp) As ranking_0
+      from cust_tracking
+      Where state = 0) a0
+On a1.cust_id = a0.cust_id and ranking_1 = ranking_0
+group by a1.cust_id;
