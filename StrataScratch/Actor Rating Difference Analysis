@@ -1,0 +1,27 @@
+Select b1.actor_name, 
+        NVL(avg_rating, latest_rating), 
+        latest_rating,
+        Round(latest_rating - NVL(avg_rating, latest_rating), 2) As rating_difference
+From
+(Select actor_name, 
+        film_rating As latest_rating
+        From (Select actor_name,
+                     film_rating,
+                     release_date,
+                     max(release_date) Over(partition by actor_name Order By release_date Desc) As max_date
+              from actor_rating_shift 
+              )
+Where release_date = max_date
+) b1
+Left Join
+(Select actor_name, 
+        Avg(film_rating) As avg_rating
+        From actor_rating_shift
+        Where (actor_name, release_date) Not In (Select actor_name, max(release_date) 
+                                                 from actor_rating_shift 
+                                                 group by actor_name)
+        group by actor_name
+        
+) b2
+On b1.actor_name = b2.actor_name
+        ;
