@@ -1,0 +1,15 @@
+Select month, description, sum_product As total_paid 
+From(
+    Select month, description, sum_product, Dense_rank() Over(partition by month Order by sum_product desc) As rank_total_paid 
+    From(
+        select To_char(invoicedate, 'mm') As month, 
+                description, 
+                Sum(quantity*unitprice) As sum_product
+        from online_retail
+        Group by To_char(invoicedate, 'mm'), description
+        ORDER by month, sum_product 
+         )
+    )
+Where rank_total_paid = 1
+;
+        
