@@ -1,0 +1,27 @@
+Select user_id, user_max_lenth
+from(
+    Select  user_id, user_max_lenth, dense_rank() over(order by user_max_lenth DESC) As ranking
+    from(
+            Select user_id, max(conecutive_lenth) user_max_lenth
+            from(
+                Select user_id, count(diff) As conecutive_lenth
+                from
+                (
+                    select user_id, date_visited, n_row, date_visited - n_row As diff
+                    from(
+                            select user_id, date_visited, row_number() over(partition by user_id order by date_visited) As n_row
+                            from(
+                                    select distinct user_id , date_visited
+                                    from user_streaks
+                                    where date_visited < to_date('2022-08-11', 'yyyy-mm-dd')
+                                    order by user_id, date_visited
+                                )
+                        )
+                )
+                group by user_id, diff
+                )
+            group by user_id
+        )
+    )
+Where ranking <4
+;
