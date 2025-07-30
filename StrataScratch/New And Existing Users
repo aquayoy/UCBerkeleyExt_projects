@@ -1,0 +1,20 @@
+select month, sum(mark)/count(user_id) as exsiting_rate, 1- sum(mark)/count(user_id) As new_rate
+from(
+    select user_id, month, last_month, last_2_month,
+            case
+            When (last_month is not null) or (LAST_2_MONTH is not null) Then 1
+            else 0
+            End As mark
+        from(
+                select user_id, month,
+                        lag(month) over(partition by user_id order by month) as last_month,
+                        lag(month,2) over(partition by user_id order by month) as last_2_month
+                    from(
+                            select distinct user_id, to_char(time_id, 'mm') as month
+                            from fact_events
+                            order by user_id
+                        )
+                    order by month
+            )
+    )
+    group by month;
