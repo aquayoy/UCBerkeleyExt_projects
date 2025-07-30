@@ -1,0 +1,7 @@
+select Distinct user_id
+from 
+    (Select user_id, record_date,
+            Lag(record_date) Over(partition by user_id Order by record_date) lag_date,
+            Lead(record_date) Over(partition by user_id Order by record_date) lead_date
+     From  sf_events)
+Where lag_date = record_date -1 And lead_date = record_date + 1;
