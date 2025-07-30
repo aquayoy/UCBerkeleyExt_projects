@@ -1,0 +1,24 @@
+Select country_name
+From(
+    Select t1.country  As country_name,
+           Dense_rank() Over(Order By comments_2019 Desc) As rank_2019, 
+           Dense_rank() Over(Order By comments_2020 Desc) As rank_2020
+    From(
+            (select country, Sum(number_of_comments)  As comments_2019
+             from fb_comments_count c
+             Left join fb_active_users u
+             On c.user_id = u.user_id
+             Where To_Char(created_at, 'yyyy-mm') = '2019-12' 
+             group by country) t1
+            inner join
+            (select country, Sum(number_of_comments) As comments_2020
+             from fb_comments_count c
+             Left join fb_active_users u
+             On c.user_id = u.user_id
+             Where To_Char(created_at, 'yyyy-mm') = '2020-01' 
+             group by country) t2
+            ON t1.country = t2.country
+        )  
+    )t4
+Where rank_2020 < rank_2019
+;
