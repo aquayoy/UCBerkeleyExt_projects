@@ -1,0 +1,10 @@
+select year_month,
+        Avg(amt_per_month) Over(order by To_date(year_month) Range between interval '2' month preceding and current row) As rolling_avg
+from
+(
+Select Sum(purchase_amt) As amt_per_month, To_char(created_at, 'yyyy-mm') As year_month
+From amazon_purchases
+Where purchase_amt > 0
+Group by To_char(created_at, 'yyyy-mm')
+)
+;
