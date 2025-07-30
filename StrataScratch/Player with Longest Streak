@@ -1,0 +1,9 @@
+select player_id, match_result, match_date, result, rownumber
+from(
+select player_id, match_result, match_date,
+Case When match_result = 'W' Then 1 
+     When match_result = 'L' Then 0 
+End As result,
+ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY match_date ) As rownumber
+from players_results
+);
