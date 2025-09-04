@@ -1,1 +1,73 @@
+More Effective Advertisement
+A website has two versions of an advertisement: one with a blue background and one with a red background. 
+You want to determine which version is more effective at getting users to click on the ad. 
+You randomly show one version to 100 users and the other version to another 100 users. 
+The blue ad is clicked on by 30 users and the red ad is clicked on by 40 users. 
+What is the probability that the red ad is more effective, given this data?
 
+Solution:
+It's a Bayesian A/B testing.
+-------------------note:
+1. General binomial distribution
+If 𝑋∼Binomial(n,p), then:
+n = number of independent trials.
+p = probability of “success” on each trial.
+X = number of successes in those 
+for the probability of exactly k successes:
+𝑃(𝑋=𝑘)= C(n, k)*p^k*(1−p)^n−k, k=0,1,…,n
+
+2.The Beta distribution
+The Beta distribution is a family of distributions on [0,1]
+It has two shape parameters α and 𝛽. The Beta distribution is a continuous probability distribution 
+defined on the interval. It is frequently used in Bayesian inference and order statistic.
+B(α,β) is the Beta function (a normalization constant).
+It’s widely used as a prior for probabilities, because it’s conjugate to the binomial likelihood — nice math convenience.
+
+# Generate 5 random values from a beta distribution with alpha = 3 and beta = 4
+samples = np.random.beta(3, 4, size=5)
+print(samples)
+# Generate a single random value from a beta distribution
+single_sample = np.random.beta(0.5, 0.5)
+print(single_sample)
+
+One draw might give 
+θb =0.29, θr =0.36.
+Another draw might give 
+θb =0.32, θr =0.38.
+After 100,000 draws, we count how often 
+θr > θb
+This is Monte Carlo simulation of the posterior.
+----------------------------------------------------------------------------------------------
+In this question, before seeing data:
+blue ad click rate θb∼Beta(1,1). 
+Red ad click rate 𝜃𝑟∼∼Beta(1,1).
+     * uniform prior = Beta(1,1)” just means:
+       we start with no bias about the click probability before data, treating all values in 
+       [0,1] as equally likely.
+Red ad click rate 𝜃𝑟∼∼Beta(1,1).
+After observing:
+30 clicks out of 100: 
+posterior 𝜃𝑏∼Beta(30+1,70+1)=Beta(31,71).
+40 clicks out of 100: 
+posterior 𝜃𝑟∼Beta(41,61).
+the fraction with θr > θb ≈ 0.90. (More draws → a more precise Monte Carlo estimate)
+Interpretation:
+Given 100 users per group:
+Red had 40% clicks vs Blue 30%.
+Bayesian analysis says there’s about a 90% probability that the red ad’s true click‐through rate is higher than blue’s.
+Bayesian answer (with neutral priors Beta(1,1)):
+Posterior probability that the red ad’s CTR exceeds the blue ad’s is ≈ 0.93.
+
+Model: 
+xb =30/100,xr=40/100 with 
+𝜃𝑏∼Beta(31,71), 𝜃𝑟∼Beta(41,61)
+Monte Carlo estimate of P(θr>θb) ≈ 0.93.
+95% posterior credible interval for the difference θr−θb: ≈ [-0.033, 0.227].
+
+Frequentist check (two-proportion z-test):
+z≈1.48 → two-sided 
+p≈0.14 (one-sided p≈0.07).
+Not statistically significant at α=0.05.
+
+Interpretation:
+Given this data and neutral priors, there’s about a 93% chance the red ad’s true CTR is higher, but the evidence isn’t strong enough to pass a standard 5% frequentist significance test with only 100 users per arm.
