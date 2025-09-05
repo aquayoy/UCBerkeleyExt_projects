@@ -1,0 +1,8 @@
+-What is the difference between the standard normal distribution (Z-distribution) and the Student's t-distribution?
+
+Feature	                 Standard Normal Distribution	                                               Student's t-Distribution
+Assumption	        Requires a known population standard deviation (σ) or                        Used when you have a small sample size and the population standard deviation is unknownthe, and 
+                    a large sample size (typically n > 30).	                                     you must estimate it using the sample standard deviation (s).
+Shape	              A single, fixed, bell-shaped curve.	                                         A family of bell-shaped curves. It has heavier tails and is flatter than the standard normal curve.
+Parameter	          No parameters (mean is 0, standard deviation is 1).	                         Defined by its degrees of freedom (df), which is typically calculated as the sample size minus one (n−1).
+Convergence	        N/A	                                                                         As the degrees of freedom increase, the t-distribution becomes taller, its tails get thinner, and it converges to the standard normal distribution. By the time the degrees of freedom are around 30, the two distributions are nearly indistinguishable.
