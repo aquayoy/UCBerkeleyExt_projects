@@ -1,4 +1,4 @@
-More Effective Advertisement
+-More Effective Advertisement
 A website has two versions of an advertisement: one with a blue background and one with a red background. 
 You want to determine which version is more effective at getting users to click on the ad. 
 You randomly show one version to 100 users and the other version to another 100 users. 
@@ -18,6 +18,42 @@ for the probability of exactly k successes:
 
 2.The Beta distribution
 The Beta distribution is a family of distributions on [0,1]
+Solution:
+Null hypothesis: 
+
+H0: p=0.5 (coin is fair)
+Ha: p=\=0.5 (coin is biased)
+p is the probability of heads
+
+suppose you flip the coin n times and observe k heads.
+The number of heads follows a Binomial distribution: X∼Binomial(n, 0.5)
+Observed proportion of heads: p̂ = k/n (p̂: the proportion of a sample, k: number of head in the sample)
+
+Under H0 , expected proportion = 0.5.
+
+solution 1. Normal approximation (large n):
+Standard error (SE): SE=(p̂q̂/n)^1/2
+                                         =(0.25/n)^1/2
+z = (p̂ -0.5)/SE
+p-value=2⋅P(Z≥∣z∣)
+If p-value < chosen significance level (e.g. alpha = 0.05), reject H0
+If p-value > chosen significance leve fail to reject H0
+
+solution 2.​ Exact Binomial test
+Under H0,  X∼Binomial(n, 0.5)
+One-sided (heads high):
+p-value=P(X≥k)= C(n, k)*0.5^k*0.5^(n-k)
+One-sided (heads low):
+p-value=P(X≤k)= C(n, k)*0.5^k*0.5^(n-k)
+p-value≈P(X≤k) + P(X≥k)}
+If p-value < chosen significance level (e.g. alpha = 0.05), reject H0
+If p-value > chosen significance leve fail to reject H0
+e.g n=20, k=14.
+One-sided 
+P(X≥14) =0.05766.
+Two-sided (exact) 
+=0.11532
+So with α=0.05 you would not reject fairness.
 It has two shape parameters α and 𝛽. The Beta distribution is a continuous probability distribution 
 defined on the interval. It is frequently used in Bayesian inference and order statistic.
 B(α,β) is the Beta function (a normalization constant).
@@ -71,3 +107,6 @@ Not statistically significant at α=0.05.
 
 Interpretation:
 Given this data and neutral priors, there’s about a 93% chance the red ad’s true CTR is higher, but the evidence isn’t strong enough to pass a standard 5% frequentist significance test with only 100 users per arm.
+
+-P Value for the Coin to be Fair
+Given a coin, how would you determine the p value necessary for the coin to be fair?
